@@ -1,7 +1,15 @@
 import { Link } from "react-router-dom";
 import { InputField } from "../components/InputField";
+import { useLoginForm } from "../hooks/useLoginForm";
+
+const INITIAL_STATE = {
+  email: "",
+  password: ""
+};
 
 export const Login = () => {
+
+  const { formData, handleChange, handleSubmit, loading } = useLoginForm(INITIAL_STATE);
 
   return (
     <>
@@ -16,7 +24,7 @@ export const Login = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit}  className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-800">
                 Email address
@@ -32,10 +40,9 @@ export const Login = () => {
                   outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                 /> */}
                 <InputField 
-                  id="email"
-                  name="email"
                   type="email"
-                  required
+                  value={formData.email} 
+                  onChange={handleChange('email')} 
                   autoComplete="email"
                 />
               </div>
@@ -64,10 +71,11 @@ export const Login = () => {
 
                 <InputField
                   id="password"
-                  name="password"
                   type="password"
+                  value={formData.password}
                   required
                   autoComplete="current-password"
+                  onChange={handleChange('password')}
                 />
               </div>
             </div>
@@ -75,10 +83,12 @@ export const Login = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold 
-                text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-              >
-                Sign in
+                disabled={loading}
+                className={`w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm 
+                ${loading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-500'} 
+                transition-colors`}
+                >
+                 {loading ? "Signing in..." : "Sign in"}
               </button>
             </div>
           </form>
