@@ -33,6 +33,7 @@ export const useRegisterForm = (initialState) => {
       
       alert("Usuario registrado con éxito");
       setFormData(initialState); // Limpia el formulario
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error(error);
       alert(error.response?.data?.message || "Error al registrar");
