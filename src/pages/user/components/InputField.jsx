@@ -8,26 +8,13 @@ export const InputField = ({ label, id, type = "text", value, onChange, classNam
       <input
         id={id}
         type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        autoComplete={autoComplete}
-        required={required}
-        className="block w-full rounded-md px-3.5 py-2 border border-gray-300 focus:ring-indigo-600 focus:border-indigo-600 outline-none"
-        // className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-  
-     />
-
-      {/* <input
-        id={id}
-        type={type}
         value={value || ""}
         onChange={onChange}
         autoComplete={autoComplete}
         required={required}
         className="block w-full rounded-md px-3.5 py-2 border border-gray-300 focus:ring-indigo-600 focus:border-indigo-600 outline-none"
         // className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-  
-     /> */}
+     />
     </div>
   );
 };
