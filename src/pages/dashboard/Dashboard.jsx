@@ -1,9 +1,9 @@
 import { Link, Routes, Route } from "react-router-dom";
 import { Login } from "../login/Login";
-import { Vehiculos } from "../Vehiculos";
-import { Mantenimientos } from "../Mantenimientos";
-import { Usuarios } from "../Usuarios";
-import { PerfilUsuario } from "../PerfilUsuario";
+import { Vehiculos } from "../vehiculos/Vehiculos";
+import { Mantenimientos } from "../mantenimientos/Mantenimientos";
+import { Usuarios } from "../users/Usuarios";
+import { PerfilUsuario } from "../user/PerfilUsuario";
 
 
 export const Dashboard = () => {
@@ -15,10 +15,10 @@ export const Dashboard = () => {
         <h2 className="text-xl font-bold mb-6">🚗 Mi garaje</h2>
 
         <nav className="flex flex-col gap-3">
-          <Link to="/dashboard" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Usuarios</Link>
-          <Link to="/dashboard/vehiculos" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vehículos</Link>
+          <Link to="/dashboard" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vehículos</Link>
           <Link to="/dashboard/mantenimientos" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Mantenimientos</Link>
-          <Link to="/dashboard/misDatos" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Mi Perfil</Link>
+          <Link to="/dashboard/user" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Mi Perfil</Link>
+          <Link to="/dashboard/users" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Usuarios</Link>
           <Link to="/login" className="hover:text-yellow-400">Cerrar sesion</Link>
         </nav>
       </aside>
@@ -34,10 +34,10 @@ export const Dashboard = () => {
         {/* Vistas */}
         <main className="p-6">
           <Routes>
-            <Route path="/" element={<Usuarios />} />
-            <Route path="vehiculos" element={<Vehiculos />} />
+            <Route path="/" element={<Vehiculos />} />
             <Route path="mantenimientos" element={<Mantenimientos />} />
-            <Route path="misDatos" element={<PerfilUsuario />} />
+            <Route path="/user" element={<PerfilUsuario />} />
+            <Route path="/users" element={<Usuarios />} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </main>
