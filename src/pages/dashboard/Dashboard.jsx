@@ -4,9 +4,11 @@ import { Vehiculos } from "../vehiculos/Vehiculos";
 import { Mantenimientos } from "../mantenimientos/Mantenimientos";
 import { Usuarios } from "../users/Usuarios";
 import { PerfilUsuario } from "../user/PerfilUsuario";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 
 export const Dashboard = () => {
+  const { data: currentUser } = useCurrentUser();
   return (
     <div className="flex h-screen bg-gray-100">
 
@@ -18,7 +20,9 @@ export const Dashboard = () => {
           <Link to="/dashboard" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Vehículos</Link>
           <Link to="/dashboard/mantenimientos" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Mantenimientos</Link>
           <Link to="/dashboard/user" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Mi Perfil</Link>
-          <Link to="/dashboard/users" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Usuarios</Link>
+          {currentUser?.rol_id === 1 && (
+            <Link to="/dashboard/users" className="bg-blue-300 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Usuarios</Link>
+          )}
           <Link to="/login" className="hover:text-yellow-400">Cerrar sesion</Link>
         </nav>
       </aside>
