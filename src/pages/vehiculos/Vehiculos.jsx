@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import client from '../../api/client';
 import { Modal } from '../../components/Modal';
 import { useVehiculos } from './hooks/useVehiculos';
+import VehiculosTable from './components/VehiculosTable';
 
 export const Vehiculos = () => {
     const { data, loading, error } = useVehiculos();
@@ -96,47 +97,7 @@ export const Vehiculos = () => {
                     )}
 
                     {!loading && !error && (
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full text-sm text-left">
-                                <thead className="bg-gray-800 text-white sticky top-0">
-                                    <tr>
-                                        <th className="px-4 py-3">Marca</th>
-                                        <th className="px-4 py-3">Modelo</th>
-                                        <th className="px-4 py-3">Año</th>
-                                        <th className="px-4 py-3">Color</th>
-                                        <th className="px-4 py-3">Placa</th>
-                                        <th className="px-4 py-3">Kilometraje</th>
-                                        <th className="px-4 py-3">Opciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {vehiculos.map((vehiculo, index) => (
-                                        <tr
-                                            key={vehiculo.id || index}
-                                            className="border-b hover:bg-gray-100 transition"
-                                        >
-                                            <td className="px-4 py-3">{vehiculo.marca}</td>
-                                            <td className="px-4 py-3">{vehiculo.modelo}</td>
-                                            <td className="px-4 py-3">{vehiculo.anio ?? vehiculo.año}</td>
-                                            <td className="px-4 py-3">{vehiculo.color}</td>
-                                            <td className="px-4 py-3">{vehiculo.placa ?? vehiculo.placas}</td>
-                                            <td className="px-4 py-3">{vehiculo.kilometraje}</td>
-                                            <td className="px-4 py-3">
-                                                <button
-                                                    onClick={() => openEditModal(vehiculo)}
-                                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                                >
-                                                    Editar
-                                                </button>
-                                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2">
-                                                    Activar/Desactivar
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                        <VehiculosTable vehiculos={vehiculos} onEdit={openEditModal}  />
                     )}
                 </div>
             </div>
@@ -204,7 +165,7 @@ export const Vehiculos = () => {
                     <label className="block text-sm font-medium text-gray-800">
                         Kilometraje
                         <input
-                            type="text"
+                            type="number"
                             value={editForm.kilometraje}
                             onChange={handleEditChange('kilometraje')}
                             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-indigo-600 focus:ring-indigo-600"
