@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import client from "../../../api/client";
 
 interface Mantenimientos {
-    vehiculo_Id: number;
-    tipo_Mantenimiento: string;
-    fecha: string;
+    id: number;
+    vehiculo_id: number;
+    tipo_mantenimiento_id: number;
+    fecha: Date;
     kilometraje: number;
     descripcion: string;
     costo: number;
     proximo_servicio_km: number;
-    proximo_servicio_fecha: string;
+    proximo_servicio_fecha: Date;
 }
 
 export const useMantenimientos = () => {
@@ -23,6 +24,7 @@ export const useMantenimientos = () => {
                 try {
                     setLoading(true);
                     const response = await client.get<Mantenimientos[]>("/maintenance/");
+                    // console.log("Datos obtenidos de la API:", response.data);   
                     setMantenimientos(response.data);
 
                 }catch (err) {

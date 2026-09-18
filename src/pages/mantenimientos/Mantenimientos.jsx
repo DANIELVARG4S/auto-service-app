@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Table } from './components/Table';
 import { MantenimientosModal } from './components/MantenimientosModal';
 import { useMantenimientos } from './hooks/useMantenimientos';
 
 const initialForm = {
   vehiculo_id: '',
-  tipo_mantenimiento: '',
+  tipo_mantenimiento_id: '',
   fecha: '',
   kilometraje: '',
   descripcion: '',
@@ -14,14 +14,10 @@ const initialForm = {
 
 export const Mantenimientos = () => {
   const { mantenimientos, loading, error } = useMantenimientos();
-  const [items, setItems] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMantenimiento, setSelectedMantenimiento] = useState(null);
   const [form, setForm] = useState(initialForm);
-
-  useEffect(() => {
-    setItems(mantenimientos || []);
-  }, [mantenimientos]);
+  const items = mantenimientos || [];
 
   const openCreateModal = () => {
     setSelectedMantenimiento(null);
@@ -29,12 +25,16 @@ export const Mantenimientos = () => {
     setIsModalOpen(true);
   };
 
+
+// proximo_servicio_fecha: "2026-08-28T06:00:00.000Z"
+//  proximo_servicio_km:1000
   const openEditModal = (mantenimiento) => {
     setSelectedMantenimiento(mantenimiento);
     setForm({
-      vehiculo_id: mantenimiento.vehiculo_Id ?? '',
-      tipo_mantenimiento: mantenimiento.tipo_Mantenimiento ?? '',
-      fecha: mantenimiento.fecha ?? '',
+      id: mantenimiento.id ?? '',
+      vehiculo_id: mantenimiento.vehiculo_id ?? '',
+      tipo_mantenimiento_id: mantenimiento.tipo_mantenimiento_id ?? '',
+      fecha: mantenimiento.fecha ? String(mantenimiento.fecha).split('T')[0] : '',
       kilometraje: mantenimiento.kilometraje ?? '',
       descripcion: mantenimiento.descripcion ?? '',
       costo: mantenimiento.costo ?? '',

@@ -22,9 +22,9 @@ export const Table = ({ mantenimientos = [], onEdit }) => {
             </tr>
           ) : (
             mantenimientos.map((mantenimiento) => (
-              <tr key={mantenimiento.id ?? `${mantenimiento.vehiculo_Id}-${mantenimiento.fecha}`} className="border-b border-gray-200 hover:bg-gray-50">
-                <td className="px-4 py-3">{mantenimiento.vehiculo_Id ?? 'N/A'}</td>
-                <td className="px-4 py-3">{mantenimiento.tipo_Mantenimiento ?? 'N/A'}</td>
+              <tr key={mantenimiento.id ?? `${mantenimiento.vehiculo_id}-${mantenimiento.fecha}`} className="border-b border-gray-200 hover:bg-gray-50">
+                <td className="px-4 py-3">{mantenimiento.vehiculo_id ?? 'N/A'}</td>
+                <td className="px-4 py-3">{mantenimiento.tipo_mantenimiento_id ?? 'N/A'}</td>
                 <td className="px-4 py-3">{mantenimiento.fecha ?? 'N/A'}</td>
                 <td className="px-4 py-3">{mantenimiento.kilometraje ?? 'N/A'}</td>
                 <td className="px-4 py-3">{mantenimiento.descripcion ?? 'Sin descripción'}</td>

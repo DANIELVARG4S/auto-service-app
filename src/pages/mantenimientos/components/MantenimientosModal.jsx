@@ -29,8 +29,6 @@ export const MantenimientosModal = ({
       <MantenimientoForm
         form={form}
         onChange={onChange}
-        isCreating={!selectedUser}
-        onCancel={onClose}
       />
     </Modal>
   );
