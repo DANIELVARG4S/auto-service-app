@@ -3,7 +3,6 @@ import { useUsers } from './hooks/useUsers';
 import UsersTable from './components/UsersTable';
 import UserForm from './components/UserForm';
 import UserModal from './components/UserModal';
-import client from '../../api/client';
 import { updateUser, createUser } from './services/userService';
 import Swal from 'sweetalert2';
 

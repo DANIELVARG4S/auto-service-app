@@ -1,17 +1,10 @@
 import { useState, useEffect } from 'react';
 import client from '../../../api/client';
-
-interface User {
-  nombre: string;
-  apellido_paterno: string;
-  apellido_materno: string;
-  email: string;  
-  telefono: string;
-}
+import type { Usuario } from '../../../types/usuario';
 
 export const useUsers = () => {
   // console.log("useUsers se ha ejecutado");
-  const [data, setData] = useState<User[]>([]);
+  const [data, setData] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<any>(null);
   
@@ -19,7 +12,7 @@ export const useUsers = () => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await client.get<User[]>("/users/");
+        const response = await client.get<Usuario[]>("/users/");
         
         console.log("Respuesta real de la API:", response.data);
         setData(response.data);

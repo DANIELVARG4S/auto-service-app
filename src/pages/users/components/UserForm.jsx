@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const UserForm = ({ form, onChange, isCreating, onCancel }) => {
+export const UserForm = ({ form, onChange, isCreating }) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <label className="block text-sm font-medium text-gray-800">
