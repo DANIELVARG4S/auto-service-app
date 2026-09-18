@@ -1,29 +1,17 @@
 import { useEffect, useState } from "react";
 import client from "../../../api/client";
-
-
-interface   Vehiculo {
-    id: number;
-    marca: string;
-    modelo: string;
-    anio: number;
-    color: string;
-    placa: string;
-    kilometraje: string;
-}
+import type { Vehiculo } from "../types";
 
 export const useVehiculos = () => {
-
     const [data, setData] = useState<Vehiculo[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<any>(null);
+    const [error, setError] = useState<unknown>(null);
 
     useEffect(() => {
-
         const fetchVehiculos = async () => {
             try {
                 setLoading(true);
-                const response = await client.get<Vehiculo[]>("/vehicles/");
+                const response = await client.get<Vehiculo[]>("/vehicles/"); 
                 setData(response.data);
                 setError(null);
             } catch (err) {
@@ -38,4 +26,4 @@ export const useVehiculos = () => {
     }, []);
 
     return { data, loading, error };
-}
+};

@@ -6,6 +6,7 @@ export const VehiculosTable = ({ vehiculos, onEdit }) => {
         <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-800 text-white sticky top-0">
                 <tr>
+                    <th className="px-4 py-3">Usuario</th>
                     <th className="px-4 py-3">Marca</th>
                     <th className="px-4 py-3">Modelo</th>
                     <th className="px-4 py-3">Año</th>
@@ -21,6 +22,7 @@ export const VehiculosTable = ({ vehiculos, onEdit }) => {
                         key={vehiculo.id || index}
                         className="border-b hover:bg-gray-100 transition"
                     >
+                        <td className="px-4 py-3">{vehiculo.usuario?.nombre || 'N/A'}</td>
                         <td className="px-4 py-3">{vehiculo.marca}</td>
                         <td className="px-4 py-3">{vehiculo.modelo}</td>
                         <td className="px-4 py-3">{vehiculo.anio ?? vehiculo.año}</td>

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import client from '../../api/client';
 import { Modal } from '../../components/Modal';
 import { useVehiculos } from './hooks/useVehiculos';
 import VehiculosTable from './components/VehiculosTable';
+import { updateVehicle } from './services/vehicleService';
 
 export const Vehiculos = () => {
     const { data, loading, error } = useVehiculos();
@@ -10,6 +10,8 @@ export const Vehiculos = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
     const [editForm, setEditForm] = useState({
+        usuario_id: '',
+        nombre: '',
         marca: '',
         modelo: '',
         anio: '',
@@ -27,12 +29,14 @@ export const Vehiculos = () => {
     const openEditModal = (vehiculo) => {
         setSelectedVehicle(vehiculo);
         setEditForm({
+            usuario_id: vehiculo.usuario_id || '',
+            nombre: vehiculo.nombre || '',
             marca: vehiculo.marca || '',
             modelo: vehiculo.modelo || '',
             anio: vehiculo.anio ?? vehiculo.año ?? '',
             color: vehiculo.color || '',
             placa: vehiculo.placa ?? vehiculo.placas ?? '',
-            kilometraje: vehiculo.kilometraje || ''
+            kilometraje: vehiculo.kilometraje ?? ''
         });
         setMessage({ type: '', text: '' });
         setEditModalOpen(true);
@@ -45,27 +49,45 @@ export const Vehiculos = () => {
     const handleEditSubmit = async () => {
         if (!selectedVehicle?.id) return;
 
+        const kilometraje = Number(editForm.kilometraje);
+
+        if (editForm.kilometraje === '' || !Number.isFinite(kilometraje) || kilometraje < 0) {
+            setMessage({ type: 'error', text: 'El kilometraje debe ser un número válido.' });
+            return;
+        }
+
         setSaving(true);
 
         try {
-            const response = await client.put(`/vehicles/${selectedVehicle.id}`, {
-                ...editForm,
-                anio: Number(editForm.anio) || 0,
-                kilometraje: editForm.kilometraje
+            const payload = {
+                marca: editForm.marca.trim(),
+                modelo: editForm.modelo.trim(),
+                anio: Number(editForm.anio),
+                color: editForm.color.trim(),
+                placa: editForm.placa.trim(),
+                kilometraje,
+            };
+
+            const updatedVehicle = await updateVehicle(selectedVehicle.id, {
+                ...payload,
             });
 
+            // console.log('Vehículo actualizado:', updatedVehicle);
             setVehiculos((prev) =>
                 prev.map((vehiculo) =>
-                    vehiculo.id === selectedVehicle.id ? { ...vehiculo, ...response.data } : vehiculo
+                    vehiculo.id === selectedVehicle.id ? { ...vehiculo, ...updatedVehicle } : vehiculo
                 )
             );
             setEditModalOpen(false);
             setMessage({ type: 'success', text: 'Vehículo actualizado correctamente.' });
         } catch (error) {
             console.error('Error al actualizar vehículo:', error);
+            const apiMessage = error.response?.data?.message;
             setMessage({
                 type: 'error',
-                text: error.response?.data?.message || 'No se pudo actualizar el vehículo.'
+                text: Array.isArray(apiMessage)
+                    ? apiMessage.join(' ')
+                    : apiMessage || 'No se pudo actualizar el vehículo.'
             });
         } finally {
             setSaving(false);
