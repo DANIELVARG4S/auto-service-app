@@ -1,6 +1,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import client from "../api/client";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export interface LoginFormState {
   email: string;
@@ -43,7 +44,12 @@ export const useLoginForm = (initialState: LoginFormState) => {
       if (response.status === 201 && token) {
         localStorage.setItem("token", token);
 
-        alert("Login successful");
+        await Swal.fire({
+          icon: "success",
+          title: "Inicio de sesión exitoso",
+          text: "Bienvenido a Auto Service",
+          confirmButtonText: "Continuar",
+        });
 
         setFormData(initialState);
 
