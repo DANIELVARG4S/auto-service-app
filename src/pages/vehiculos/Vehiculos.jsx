@@ -91,8 +91,7 @@ export const Vehiculos = () => {
         setSaving(true);
 
         try {
-            const payload = {                
-                id: selectedVehicle.id,
+            const payload = {
                 usuario_id: selectedVehicle ? editForm.usuario_id : currentUser.id,
                 marca: editForm.marca.trim(),
                 modelo: editForm.modelo.trim(),
@@ -103,7 +102,10 @@ export const Vehiculos = () => {
             };
 
             if (selectedVehicle) {
-                const updatedVehicle = await updateVehicle(selectedVehicle.id, payload);
+                const updatedVehicle = await updateVehicle(selectedVehicle.id, {
+                    ...payload,
+                    id: selectedVehicle.id,
+                });
                 // console.log('Vehículo actualizado:', updatedVehicle);
                 setVehiculos((prev) =>
                     prev.map((vehiculo) =>

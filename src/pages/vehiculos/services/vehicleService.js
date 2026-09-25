@@ -1,6 +1,7 @@
 import client from '../../../api/client';
 
 export const createVehicle = async (payload) => {
+    console.log('Creating vehicle with payload:', payload);
     const response = await client.post('/vehicles', payload);
     return response.data;
 };
