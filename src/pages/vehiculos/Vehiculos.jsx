@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from '../../components/Modal';
 import { useVehiculos } from './hooks/useVehiculos';
 import VehiculosTable from './components/VehiculosTable';
-import { updateVehicle } from './services/vehicleService';
+import { useCurrentUser } from '../../hooks/useCurrentUser';
+import { createVehicle, updateVehicle } from './services/vehicleService';
 
 export const Vehiculos = () => {
     const { data, loading, error } = useVehiculos();
+    const { data: currentUser } = useCurrentUser();
     const [vehiculos, setVehiculos] = useState([]);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -21,6 +23,22 @@ export const Vehiculos = () => {
     });
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+
+    const openCreateModal = () => {
+        setSelectedVehicle(null);
+        setEditForm({
+            usuario_id: '',
+            nombre: '',
+            marca: '',
+            modelo: '',
+            anio: '',
+            color: '',
+            placa: '',
+            kilometraje: ''
+        });
+        setMessage({ type: '', text: '' });
+        setEditModalOpen(true);
+    };
 
     useEffect(() => {
         setVehiculos(data || []);
@@ -46,48 +64,74 @@ export const Vehiculos = () => {
         setEditForm((prev) => ({ ...prev, [field]: e.target.value }));
     };
 
-    const handleEditSubmit = async () => {
-        if (!selectedVehicle?.id) return;
-
+    const handleVehicleSubmit = async () => {
         const kilometraje = Number(editForm.kilometraje);
+        const anio = Number(editForm.anio);
 
         if (editForm.kilometraje === '' || !Number.isFinite(kilometraje) || kilometraje < 0) {
             setMessage({ type: 'error', text: 'El kilometraje debe ser un número válido.' });
             return;
         }
 
+        if (editForm.anio === '' || !Number.isInteger(anio) || anio < 1900) {
+            setMessage({ type: 'error', text: 'El año debe ser un número válido.' });
+            return;
+        }
+
+        if (!editForm.marca.trim() || !editForm.modelo.trim() || !editForm.color.trim() || !editForm.placa.trim()) {
+            setMessage({ type: 'error', text: 'Marca, modelo, color y placa son obligatorios.' });
+            return;
+        }
+
+        if (!selectedVehicle && !currentUser?.id) {
+            setMessage({ type: 'error', text: 'No se pudo identificar al usuario del vehículo.' });
+            return;
+        }
+
         setSaving(true);
 
         try {
-            const payload = {
+            const payload = {                
+                id: selectedVehicle.id,
+                usuario_id: selectedVehicle ? editForm.usuario_id : currentUser.id,
                 marca: editForm.marca.trim(),
                 modelo: editForm.modelo.trim(),
-                anio: Number(editForm.anio),
+                anio,
                 color: editForm.color.trim(),
                 placa: editForm.placa.trim(),
                 kilometraje,
             };
 
-            const updatedVehicle = await updateVehicle(selectedVehicle.id, {
-                ...payload,
-            });
+            if (selectedVehicle) {
+                const updatedVehicle = await updateVehicle(selectedVehicle.id, payload);
+                // console.log('Vehículo actualizado:', updatedVehicle);
+                setVehiculos((prev) =>
+                    prev.map((vehiculo) =>
+                        vehiculo.id === selectedVehicle.id ? { ...vehiculo, ...updatedVehicle } : vehiculo
+                    )
+                );
+                setMessage({ type: 'success', text: 'Vehículo actualizado correctamente.' });
+            } else {
+                const createdVehicle = await createVehicle({
+                    ...payload,
+                    usuario_id: currentUser.id,
+                });
 
-            // console.log('Vehículo actualizado:', updatedVehicle);
-            setVehiculos((prev) =>
-                prev.map((vehiculo) =>
-                    vehiculo.id === selectedVehicle.id ? { ...vehiculo, ...updatedVehicle } : vehiculo
-                )
-            );
+                setVehiculos((prev) => [createdVehicle, ...prev]);
+                setMessage({ type: 'success', text: 'Vehículo agregado correctamente.' });
+            }
+
             setEditModalOpen(false);
-            setMessage({ type: 'success', text: 'Vehículo actualizado correctamente.' });
         } catch (error) {
-            console.error('Error al actualizar vehículo:', error);
+            console.error(selectedVehicle ? 'Error al actualizar vehículo:' : 'Error al crear vehículo:', error);
             const apiMessage = error.response?.data?.message;
             setMessage({
                 type: 'error',
                 text: Array.isArray(apiMessage)
                     ? apiMessage.join(' ')
-                    : apiMessage || 'No se pudo actualizar el vehículo.'
+                    : apiMessage || (selectedVehicle
+                        ? 'No se pudo actualizar el vehículo.'
+                        : 'No se pudo crear el vehículo.')
             });
         } finally {
             setSaving(false);
@@ -99,9 +143,18 @@ export const Vehiculos = () => {
             <div className="p-6 bg-gray-100 min-h-screen">
                 <div className="max-w-6xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
                     <div className="p-4 border-b">
-                        <h2 className="text-xl font-semibold text-gray-700">
-                            Vehículos
-                        </h2>
+                         <div className="flex items-center justify-between gap-3">
+                            <h2 className="text-xl font-semibold text-gray-700">
+                                Vehículos
+                            </h2>
+                            <button
+                                type="button"
+                                onClick={openCreateModal}
+                                className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
+                            >
+                                Agregar vehículo
+                            </button>
+                         </div>
                     </div>
 
                     {message.text && (
@@ -127,10 +180,12 @@ export const Vehiculos = () => {
             <Modal
                 isOpen={editModalOpen}
                 onClose={() => setEditModalOpen(false)}
-                title="Editar vehículo"
-                description="Actualiza los datos del vehículo antes de enviarlos."
-                onConfirm={handleEditSubmit}
-                confirmLabel="Guardar cambios"
+                title={selectedVehicle ? 'Editar vehículo' : 'Agregar vehículo'}
+                description={selectedVehicle
+                    ? 'Actualiza los datos del vehículo antes de enviarlos.'
+                    : 'Completa los datos para agregar un vehículo.'}
+                onConfirm={handleVehicleSubmit}
+                confirmLabel={selectedVehicle ? "Guardar cambios" : "Agregar vehículo"}
                 isConfirming={saving}
             >
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
